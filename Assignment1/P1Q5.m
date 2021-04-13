@@ -157,22 +157,7 @@ hold on;
     hold off;
 hold off;
 
-%%
-
-% -------------------------------- Q1.5c ---------------------------------
-% Plot the AR spectrum estimate for the RRI signals for the three trials
-% using the MATLAB function aryule to estimate the AR coefficients of the
-% RRI signal.
-
-% Experiment with the model order until you observe a peak in the spectrum
-% approximately corresponding to the theoretical respiration rate. List the
-% differences observed between the estimated AR spectrum and the
-% periodogram estimate in q1.5a
-
-% Plot the periodogram of each of the three trials together with different
-% AR model orders
-
-% Plot the PACF of the three breathing trials (why? - need to clarify this)
+%%5c
 
 ModelOrders = 9:3:12; 
 numOrders = length(ModelOrders);

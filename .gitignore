@@ -3,3 +3,5 @@ dpm-coursework/
 *.pdf
 *.png
 *.icloud
+*.asv
+*plots/*
