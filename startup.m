@@ -5,7 +5,6 @@ addpath('Assignment1/plots/');
 addpath('Assignment2/');
 addpath('Assignment3/');
 addpath('Assignment4/');
-addpath('Assignment5/');
 addpath('util/');
 addpath('data/');
 addpath('data/wind-dataset/');

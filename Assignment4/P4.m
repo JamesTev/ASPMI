@@ -1,15 +1,20 @@
 clear;
 clc;
 startup;
-%%
+
 load 'time-series.mat'
 yraw = y;
 y = yraw-mean(yraw);
 
-%% Q1 zero mean standard LMS
+set(groot, 'defaultFigureUnits', 'centimeters', 'defaultFigurePosition', [0 40 45 9]);
+
+set(groot,  'DefaultAxesFontSize', 19, ...
+            'DefaultFigureColormap', parula(10)) 
+        
 mu = 1e-5;
+%% Q1 zero mean standard LMS
 act = @(x) x;
-[ypred, err, ~] = lms(y, 4, mu, act);
+[ypred, err, w] = lms(y, 4, mu, act);
 
 mse = mean(err.^2);
 Rp = 10*log10(var(ypred)/var(err));
@@ -17,16 +22,30 @@ Rp = 10*log10(var(ypred)/var(err));
 fprintf('Q1: MSE: %.4f, Prediction gain Rp: %.4f\n', mse, Rp);
 
 figure;
+subplot(1,2,1);
 plot(y);
 hold on;
 plot(ypred);
 title(sprintf('Linear LMS one-step-ahead prediction of $y[n]$'));
 xlabel('sample $n$');
-legend('$\bar{y}[n]=y[n]-E\{y[n]\}$ ', '$\hat{y}[n]$', 'Orientation', 'Horizontal', 'FontSize', 17, 'Location', 'South East');
+legend('$\bar{y}[n]=y[n]-E\{y[n]\}$ ', '$\hat{y}[n]$', 'Orientation', 'Horizontal', 'FontSize', 17, 'Location', 'North West');
+
+% plot weight evolution
+subplot(1,2,2);
+for i =1:size(w, 1)
+    plot(w(i, :), 'DisplayName', sprintf('$w_{%d}$', i));
+    hold on;
+end
+ylim([min(min(w, [], 2)), max(max(w, [], 2))*1.2])
+grid on; grid minor;
+xlabel('sample $n$');
+title('LMS weight evolution');
+legend('show', 'FontSize', 15, 'Orientation', 'Horizontal', 'Location', 'North West');
+hold off;
 
 %% Q2 tanh activation
 act = @(x) tanh(x);
-[ypred, err, ~] = lms(y, 4, mu, act);
+[ypred, err, w] = lms(y, 4, mu, act);
 
 mse = mean(err.^2);
 Rp = 10*log10(var(ypred)/var(err));
@@ -34,17 +53,31 @@ Rp = 10*log10(var(ypred)/var(err));
 fprintf('Q2: MSE: %.4f, Prediction gain Rp: %.4f\n', mse, Rp);
 
 figure;
+subplot(1,2,1);
 plot(y);
 hold on;
 plot(ypred);
-title(sprintf('Non-linear LMS prediction of $y[n]$ with $\\phi = \\textrm{tanh(.)}$ activation'));
+title(sprintf('Non-linear LMS with $\\phi = \\textrm{tanh(.)}$ activation'));
 xlabel('sample $n$');
 legend('$\bar{y}[n]$ ', '$\hat{y}[n]$', 'Orientation', 'Horizontal', 'FontSize', 17, 'Location', 'South East');
+
+% plot weight evolution
+subplot(1,2,2);
+for i =1:size(w, 1)
+    plot(w(i, :), 'DisplayName', sprintf('$w_{%d}$', i));
+    hold on;
+end
+ylim([min(min(w, [], 2)), max(max(w, [], 2))*1.2])
+grid on; grid minor;
+xlabel('sample $n$');
+title('LMS weight evolution');
+legend('show', 'FontSize', 15, 'Orientation', 'Horizontal', 'Location', 'North West');
+hold off;
 
 %% Q3 a*tanh activation
 a = max(abs(y));
 act = @(x) a*tanh(x);
-[ypred, err, ~] = lms(y, 4, mu, act);
+[ypred, err, w] = lms(y, 4, mu, act);
 
 mse = mean(err.^2);
 Rp = 10*log10(var(ypred)/var(err));
@@ -52,18 +85,64 @@ Rp = 10*log10(var(ypred)/var(err));
 fprintf('Q3: MSE: %.4f, Prediction gain Rp: %.4f\n', mse, Rp);
 
 figure;
+subplot(1,2,1);
 plot(y);
 hold on;
 plot(ypred);
-title(sprintf('Non-linear LMS prediction of $y[n]$ with $\\phi = a\\textrm{tanh(.)}$, $a=%.2f$', a));
+title(sprintf('Non-linear LMS with $\\phi = a\\textrm{tanh(.)}$, $a=%.2f$', a));
 xlabel('sample $n$');
 legend('$\bar{y}[n]$ ', '$\hat{y}[n]$', 'Orientation', 'Horizontal', 'FontSize', 17, 'Location', 'South East');
 
+% plot weight evolution
+subplot(1,2,2);
+for i =1:size(w, 1)
+    plot(w(i, :), 'DisplayName', sprintf('$w_{%d}$', i));
+    hold on;
+end
+ylim([min(min(w, [], 2)), max(max(w, [], 2))*1.2])
+grid on; grid minor;
+xlabel('sample $n$');
+title('LMS weight evolution');
+legend('show', 'FontSize', 15, 'Orientation', 'Horizontal', 'Location', 'North West');
+hold off;
+
+aRange = linspace(1, max(abs(y))*1.3, 30);
+Errs = zeros(length(aRange), 1);
+Gains = zeros(length(aRange), 1);
+
+for i = 1:length(aRange)
+    a = aRange(i);
+    act = @(x) a*tanh(x);
+    [ypred, err, ~] = lms(y, 4, mu, act);
+
+    Errs(i) = mean(err.^2);
+    Gains(i) = 10*log10(var(ypred)/var(err));
+end
+
+figure;
+subplot(1,2,1);
+plot(aRange, Errs, 'Marker', 'o', 'DisplayName', 'MSE');
+xline(max(abs(y)), '-.k', 'LineWidth', 1.5, 'DisplayName', '$\textrm{max(}|y[n]|))$');
+title('MSE vs activation coefficient $a$')
+xlabel('activation coefficient $a$')
+xlim([1, max(aRange)*1.05]);
+grid on; grid minor;
+legend("show", "Location", "South West")
+
+hold on;
+subplot(1,2,2);
+plot(aRange, Gains, 'Marker', 'o', 'Color', getcol(2, 1), 'DisplayName', '$R_p$')
+title('Prediction gain $R_p$ vs activation coefficient $a$')
+xline(max(abs(y)), '-.k', 'LineWidth', 1.5, 'DisplayName', '$\textrm{max(}|y[n]|))$');
+legend("show", "Location", "South West")
+xlabel('activation coefficient $a$')
+grid on; grid minor;
+xlim([1, max(aRange)*1.05]);
 %% Q4 bias
 
 a = max(abs(yraw));
 act = @(x) a*tanh(x);
-[ypred, err, ~] = lmsBias(yraw, 4, mu, act);
+[ypred, err, w] = lmsBias(yraw, 4, mu, act);
 
 mse = mean(err.^2);
 Rp = 10*log10(var(ypred)/var(err));
@@ -71,12 +150,26 @@ Rp = 10*log10(var(ypred)/var(err));
 fprintf('Q4: MSE: %.4f, Prediction gain Rp: %.4f\n', mse, Rp);
 
 figure;
+subplot(1,2,1);
 plot(yraw);
 hold on;
 plot(ypred);
 title(sprintf('Non-linear LMS prediction of $y[n]$ with bias'));
 xlabel('sample $n$');
 legend('$y[n]$ ', '$\hat{y}[n]$', 'Orientation', 'Horizontal', 'FontSize', 17, 'Location', 'South East');
+
+% plot weight evolution
+subplot(1,2,2);
+for i =1:size(w, 1)
+    plot(w(i, :), 'DisplayName', sprintf('$w_{%d}$', i));
+    hold on;
+end
+ylim([min(min(w, [], 2)), max(max(w, [], 2))*1.2])
+grid on; grid minor;
+xlabel('sample $n$');
+title('LMS weight evolution');
+legend('show', 'FontSize', 15, 'Orientation', 'Horizontal', 'Location', 'North West');
+hold off;
 %% Q5 pre training
 order = 4;
 N = 20;
@@ -93,14 +186,14 @@ end
 
 % plot weight evolution
 figure;
-subplot(1,2,1);
+subplot(1,2,2);
 for i=1:order+1
     plot(W(i, :), 'DisplayName', sprintf('$w_{%d}$', i));
     hold on;
 end
-grid on;
+grid on; grid minor;
 xlabel('epoch');
-title('LMS weight evolution over 100 epochs of pretraining');
+title('LMS weight evolution: 100 epochs of pretraining');
 legend('show');
 hold off;
 
@@ -112,11 +205,11 @@ Rp = 10*log10(var(ypred)/var(err));
 
 fprintf('Q5: MSE: %.4f, Prediction gain Rp: %.4f\n', mse, Rp);
 
-subplot(1,2,2);
+subplot(1,2,1);
 plot(yraw);
 hold on;
 plot(ypred);
-title(sprintf('Non-linear LMS prediction of $y[n]$ with bias and pretrained weights'));
+title(sprintf('Non-linear LMS with bias and pretrained weights'));
 xlabel('sample $n$');
 legend('$y[n]$ ', '$\hat{y}[n]$', 'Orientation', 'Horizontal', 'FontSize', 17, 'Location', 'South East');
 %%
