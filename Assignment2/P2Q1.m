@@ -4,11 +4,7 @@ clear;
 clc;
 % environment settings
 startup;
-%%
-% -------------------------------- Q2.1b ---------------------------------
-% what are the entries of the correlation matrix of the input vector
-
-% this entire thing is actually in the wrong file
+%% Q1
 
 % Synthesis
 N = 1000;
@@ -160,7 +156,6 @@ error_a2_mu2 = abs(a_2_est_mu2 - 0.8);
 % -------------------------------- Q2.1f ---------------------------------
 % Leaky LMS
 
-% todo: save plots for two values of gamma bc its required
 gamma = [0.3 0.05 0.01];
 
 mu_leaky = 0.01;

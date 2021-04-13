@@ -1,7 +1,6 @@
 %% init script
 close all;
 clear;
-% environment settings
 startup;
 
 %%
@@ -66,10 +65,8 @@ for p = 1:3 % test multiple p values
     p2=plot(F,std(Pmat),'linewidth', 1.5,'Color', getcol(3, 1), 'DisplayName', '$\sigma_{\hat{P}(\omega)}$' );
     title(sprintf('MUSIC pseudospectrum with $p^*=%d$, $p_i=%d$, $n=%d$', npeaks, p, N));
     xlim([0.12, 0.3]);
-    %axis([0.12, 0.3, 0, 100*(1.5+ p*p)]);
     legend([p1, p2], 'FontSize', 16)
     grid on; xlabel('Frequency (Hz)'); ylabel('Pseudospectrum');
-    saveas(fig, sprintf('Assignment1/plots/P1Q3e-music-p%d', p), 'epsc');
     hold on;
     
 end

@@ -20,7 +20,6 @@ f(1001:1500)=100+((1:500)./25).^2;
 phi = cumtrapz(f); % integral
 w = (0:(K-1)) .* (fs / K);
 
-% signal
 y = exp(1j * (2 * pi * phi / fs)) + eta;
 
 mu = 1;
@@ -31,7 +30,6 @@ X = (1 / K) * exp(1j * (1:N)' * pi * (0:(K-1)) / K)';
 
 figure;
 for i = 1:length(gammaRange)
-    % CLMS
     [~, ~, H] = clms_leaky(X, y', mu, gammaRange(i));
 
     % remove outliers

@@ -1,9 +1,7 @@
 %% init script
 close all;
 clear;
-% environment settings
 startup;
-clc;
 rng(0);
 
 %% Correlogram Plottinag
@@ -22,7 +20,6 @@ x_wgn_filt = filter(b,a, x_wgn); % MA filter % **TODO: comment on the difference
 
 X = [x_wgn x_sin x_wgn_filt];
 Xlabels = {'WGN', 'sinusoid with AWGN', 'MA-filtered WGN'};
-%%
 
 for i = 1:length(Xlabels)
     [r_b, lags_b, P_b] = correlogram(X(:, i), 'biased', length(X(:, i)));
@@ -41,7 +38,6 @@ for i = 1:length(Xlabels)
     ylabel("$r(k)$");
     grid on;
     legend('show');
-    saveas(fig1, sprintf('Assignment1/plots/P1Q3a-ACF-%s', replace(Xlabels{i}, ' ', '-')), 'epsc');
     
     
     fig2 = figure("Name", sprintf("%s PSD", Xlabels{i}));
@@ -53,8 +49,6 @@ for i = 1:length(Xlabels)
     ylabel("Power");
     grid on;
     legend('show');
-    %xlim([0, 3]);
-    saveas(fig2, sprintf('Assignment1/plots/P1Q3a-PSD-%s', replace(Xlabels{i}, ' ', '-')), 'epsc');
 end
 
 

@@ -1,7 +1,6 @@
 %% init script
 close all;
 clear;
-% environment settings
 startup;
 
 %% Correlogram Plotting
@@ -16,7 +15,7 @@ fs = 10;
 n = 0:1/(2*fs):fs;
 N = length(n);
 
-
+% generate two different pure sinusoidal signals
 x1 = a(1)*sin(2*pi*n*f(1))+a(2)*sin(2*pi*n*f(2))+a(3)*sin(2*pi*n*f(3));
 x2 = a2(1)*cos(2*pi*n*f2(1))+a2(2)*cos(2*pi*n*f2(2));
 
@@ -71,7 +70,6 @@ ylabel("Power (dB)");
 legend([p1, p2]);
 grid on;
 axis([0.0, 3, -25, 25]);
-saveas(fig1, 'Assignment1/plots/P1Q3b-x1-psd-multi-db.eps', 'epsc');
 
 fig2 = figure;
 plot(normlags*fs, pow2db(squeeze(Pmat(2, :, :))), 'Color', getcol(6, 0.4), 'LineWidth', 0.1)
@@ -86,7 +84,6 @@ legend([p1, p2]);
 grid on;
 xlim([0.8, 2.0]);
 xticks(0:0.1:1.8)
-saveas(fig2, 'Assignment1/plots/P1Q3b-x2-psd-multi-db.eps', 'epsc');
 %%
 
 a = [0.6 0.4 0.8];
@@ -100,8 +97,6 @@ N = length(n);
 
 
 x1 = a(1)*sin(n*w(1))+a(2)*sin(n*w(2))+a(3)*sin(n*w(3));
-
-% TODO: generate another signal
 
 ntrials = 150;
 noisepower = 1;
@@ -124,7 +119,4 @@ title('PSD estimates (different realisations and statistical properties)');
 xlabel("$\omega$ ($\times 2\pi$ rad/s) ");
 ylabel("Power");
 grid on;
-%xticks(0:0.2:3)
 legend([p1, p2]);
-% plotEstimatedPSD(x, 150, 1, fs);
-%axis([0.0, 3, 0, 90]);

@@ -188,7 +188,6 @@ x_hat_ale_mean=mean(x_hat_ale);
 x_hat_anc_mean=mean(x_hat_anc);
 mpse_mean=mean(mpse);
 
-% generate x-axis for plotting
 x_ax=1:N;
 
 figure(1);

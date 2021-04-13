@@ -1,7 +1,6 @@
 %% init script
 close all;
 clear;
-% environment settings
 startup;
 %% Periodogram applied to sunspot data: visualise data
 load sunspot.dat
@@ -13,8 +12,7 @@ x_dt = detrend(x-mean(x));
 x_log = log(x+1e-10); % numerical conditioning
 x_log = x_log - mean(x_log);
 
-fig = figure();
-
+figure();
 plot(t, x, "DisplayName", "raw series");
 hold on;
 plot(t, x_dt, "DisplayName", "mean and trend removed");
@@ -24,11 +22,9 @@ ylim([-75 175]);
 grid on; 
 legend("show");
 
-saveas(fig, "Assignment1/plots/P1_2a-sunspots-1.eps", "epsc");
-
 hold off;
 
-fig = figure();
+figure();
 plot(t, x_log, 'Color', getcol(3, 1), "DisplayName", "log then mean removed");
 ylim([-30 10]);
 xlabel("Year");
@@ -36,8 +32,6 @@ ylabel("Number of Sunspots");
 legend("show");
 grid on; 
 hold off;
-
-saveas(fig, "Assignment1/plots/P1_2a-sunspots-2.eps", "epsc");
 
 %%
 wintype = "Rect"; % Chebyshev, Hamming, Bartlett

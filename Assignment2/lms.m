@@ -1,4 +1,3 @@
-% ------------------------ LMS Adaptive Predictor ------------------------
 function [err , w] = lms(x, order, mu)
     N = length(x); % order is lag order
     w = zeros(order, N+1); % need N+1 weights because we're going to ignore first w

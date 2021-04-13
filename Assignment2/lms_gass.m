@@ -1,9 +1,8 @@
-% % --------------------------- LMS GASS Algoriths ------------------------
+% LMS GASS
 % % x: Input Signal
 % % alpha: 
 % % rho: 
 % % p: MA Order
-% % algorithm: (1) Benveniste, (2) Ang & Farhang, (3) Matthews & Xie
 
 function [e , w, mu] = lms_gass(x, u, p, alpha, rho, algorithm)
     N = length(x);
@@ -20,15 +19,14 @@ function [e , w, mu] = lms_gass(x, u, p, alpha, rho, algorithm)
         e(i) = x(i) - x_est(i);
         
         w(:, i+1) = w(:, i) + mu(i) * e(i) * x(:, i); % weight update
-        
         mu(i+1) = mu(i) + rho * e(i) *  x(:, i) * psi(:, i);
         
          switch algorithm
-            case 1 % Ben
+            case 'Benveniste' 
                 psi(:,i+1) = max((eye(p) - mu(i) * x(:, i) * x(:, i)') * psi(:,i) + e(i) * x(:, i), 0);
-            case 2 % AF
+            case 'AngFarhang' 
                 psi(:,i+1) = alpha * psi(:,i) + e(i) * x(:, i);
-            case 3 % MX
+            case 'Matthews' 
                 psi(:,i+1) = e(i) * x(:, i);
         end
     end

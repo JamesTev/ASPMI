@@ -1,4 +1,3 @@
-% --------------------- Leaky LMS Adaptive Predictor ---------------------
 % Note: same as LMS but with a leakage coefficient gamma
 function [err , w] = lms_leaky(x, order, mu, gamma)
     N = length(x);
