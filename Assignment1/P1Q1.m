@@ -29,6 +29,7 @@ for i = 1:length(w)
 
     subplot(length(w),2,2*(i-1)+1);
     plot(lags,RxxRect, 'Color', getcol(i, 1));
+    xlabel('lag $k$');
     xlim([-300, 300]);
     title(sprintf('ACF of rectangular window of width %d', w(i)));
     hold on;
